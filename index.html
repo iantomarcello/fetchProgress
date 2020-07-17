@@ -1,0 +1,93 @@
+<style media="screen">
+  * {
+    color: white;
+    font-family: Tahoma, sans-serif;
+    text-align: center;
+  }
+
+  body {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgb(255, 118, 110);
+    margin: 0;
+  }
+
+  aside {
+    font-size: 12px;
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+  }
+</style>
+
+<main>
+  <h1>A Javascript Fetch with Progress</h1>
+  <div id="target">
+    <h2>Loading...</h2>
+  </div>
+</main>
+
+<footer></footer>
+
+<aside>images are from <a href="https://unsplash.com/">Unsplash</a></aside>
+
+<script type="module">
+
+  import fetchProgress from "./fetchProgress.js";
+
+  let urls = [
+    {
+      id: "Mann",
+      owner: "Jonnelle Yankovich",
+      website: "https://www.instagram.com/jey__photography/",
+      url: "https://images.unsplash.com/photo-1562133094-fb8d05dcb178",
+      message: "Your LOOONNNNG awaited prince charming... No? 🤴"
+    }, {
+      id: "Katze",
+      owner: "Callum Wale",
+      website: "https://callumwale.co.uk/",
+      url: "https://images.unsplash.com/photo-1533738699159-d0c68059bb61",
+      message: "Cat is not amused with the loading speed... 😾"
+    }, {
+      id: "Sonne",
+      owner: "Max Kleinen",
+      website: "https://unsplash.com/@hirmin/",
+      url: "https://images.unsplash.com/photo-1553884013-b6968e053b96",
+      message: "That took so long, the sun has set. 🌅"
+    },
+  ]
+
+  let urlObj = urls[Math.floor(Math.random() * urls.length)];
+  let target = document.getElementById("target");
+  let footer = document.querySelector("footer");
+
+  let thatCallbackTho = (accumulated, total) => {
+    target.querySelector("h2").textContent = `Loading ${(accumulated / total * 100).toFixed(0)}%`;
+  }
+
+  fetchProgress(urlObj.url, thatCallbackTho, {cache: "no-store"})
+    .then(resp => resp.blob())
+    .then(image => {
+      let img = new Image;
+      img.src = URL.createObjectURL(image);
+      img.width = 340;
+      target.lastElementChild.remove();
+      target.appendChild(img);
+
+      let message = document.createElement("h3");
+      message.textContent = urlObj.message;
+      target.appendChild(message);
+
+      let source = document.createElement("a");
+      source.href = urlObj.website;
+      source.target = "_blank";
+      let sourceSmall = document.createElement("small");
+      sourceSmall.textContent = `image by ${urlObj.owner}`;
+      source.appendChild(sourceSmall);
+      footer.appendChild(source);
+    })
+</script>

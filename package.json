@@ -1,0 +1,20 @@
+{
+  "name": "fetchprogress",
+  "version": "0.0.1",
+  "description": "Fetch API with streaming progress.",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx es-dev-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "fetch",
+    "loading",
+    "progress"
+  ],
+  "author": "Ian Yong",
+  "license": "ISC",
+  "devDependencies": {
+    "es-dev-server": "^1.46.0"
+  }
+}
