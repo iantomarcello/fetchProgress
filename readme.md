@@ -12,7 +12,7 @@ Just link to the file and call the function with the progress capturing function
 <script src="path/to/fetchProgress.js"></script>
 <script>
   let progressCapture = (accumulated, total) => {
-    target.querySelector("h1").textContent = `Loading ${(accumulated / total * 100).toFixed(0)}%`;
+    document.querySelector("h1").textContent = `Loading ${(accumulated / total * 100).toFixed(0)}%`;
   }
 
   fetchProgress("path/to/resource", progressCapture)
@@ -28,7 +28,7 @@ Or do it the ES6 Module way.
 <script type="module">
   import fetchProgress from "./path/to/fetchProgress.js";
   let progressCapture = (accumulated, total) => {
-    target.querySelector("h1").textContent = `Loading ${(accumulated / total * 100).toFixed(0)}%`;
+    document.querySelector("h1").textContent = `Loading ${(accumulated / total * 100).toFixed(0)}%`;
   }
 
   fetchProgress("path/to/resource", progressCapture)
