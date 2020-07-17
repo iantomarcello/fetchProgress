@@ -50,4 +50,4 @@ fetchProgress("path/to/resource", progressCapture, {
 
 See it in action.
 ---
-Another fancy way to say: here's a [demo](https://iantomarcello.github.com/fetchProgress)
+Another fancy way to say: here's a [demo](https://iantomarcello.github.io/fetchProgress)
