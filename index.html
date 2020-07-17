@@ -1,93 +1,183 @@
-<style media="screen">
-  * {
-    color: white;
-    font-family: Tahoma, sans-serif;
-    text-align: center;
-  }
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+    <title>Javascript Fetch with Progress</title>
+    <style>
+      * {
+        color: white;
+        font-family: Tahoma, sans-serif;
+        text-align: center;
+      }
 
-  body {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: rgb(255, 118, 110);
-    margin: 0;
-  }
+      body {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, rgb(249, 90, 81), rgb(224, 62, 53));
+        margin: 0;
+      }
 
-  aside {
-    font-size: 12px;
-    position: absolute;
-    right: 15px;
-    bottom: 15px;
-  }
-</style>
+      aside {
+        font-size: 12px;
+        position: absolute;
+        right: 15px;
+        bottom: 15px;
+      }
 
-<main>
-  <h1>A Javascript Fetch with Progress</h1>
-  <div id="target">
-    <h2>Loading...</h2>
-  </div>
-</main>
+      aside ul {
+        list-style: none;
+      }
 
-<footer></footer>
+      aside ul li {
+        text-align: right;
+        margin-block-start: 3px;
+      }
 
-<aside>images are from <a href="https://unsplash.com/">Unsplash</a></aside>
+      #loader {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        padding: 15px;
+      }
 
-<script type="module">
+      #loader div {
+        display: flex;
+      }
 
-  import fetchProgress from "./fetchProgress.js";
+      #loader button {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        padding: 5px 0;
+        text-align: center;
+        color: black;
+        margin-block-start: 8px;
+      }
 
-  let urls = [
-    {
-      id: "Mann",
-      owner: "Jonnelle Yankovich",
-      website: "https://www.instagram.com/jey__photography/",
-      url: "https://images.unsplash.com/photo-1562133094-fb8d05dcb178",
-      message: "Your LOOONNNNG awaited prince charming... No? 🤴"
-    }, {
-      id: "Katze",
-      owner: "Callum Wale",
-      website: "https://callumwale.co.uk/",
-      url: "https://images.unsplash.com/photo-1533738699159-d0c68059bb61",
-      message: "Cat is not amused with the loading speed... 😾"
-    }, {
-      id: "Sonne",
-      owner: "Max Kleinen",
-      website: "https://unsplash.com/@hirmin/",
-      url: "https://images.unsplash.com/photo-1553884013-b6968e053b96",
-      message: "That took so long, the sun has set. 🌅"
-    },
-  ]
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Javascript Fetch with Progress</h1>
+      <h5>A script that shows accurate loading progress.</h5>
+      <div id="target">
+        <!-- Output goes here -->
+      </div>
+      <form id="loader">
+        <p>Loader Appearance</p>
+        <div>
+          <input type="radio" name="appearance" value="number" id="number" checked>
+          <label for="number">Numberic</label>
+        </div>
+        <div>
+          <input type="radio" name="appearance" value="bar" id="bar">
+          <label for="bar">Progress Bar</label>
+        </div>
+        <div>
+          <input type="radio" name="appearance" value="circle" id="circle">
+          <label for="circle">Circular Bar</label>
+        </div>
+        <button type="button" id="loader-reload">Reload</button>
+      </form>
+    </main>
 
-  let urlObj = urls[Math.floor(Math.random() * urls.length)];
-  let target = document.getElementById("target");
-  let footer = document.querySelector("footer");
+    <footer>
+      <!-- Owner of loaded image goes here -->
+    </footer>
 
-  let thatCallbackTho = (accumulated, total) => {
-    target.querySelector("h2").textContent = `Loading ${(accumulated / total * 100).toFixed(0)}%`;
-  }
+    <aside>
+      <ul>
+        <li>images are from <a href="https://unsplash.com/" target="_blank" rel="noreferrer">Unsplash</a></li>
+        <li>view codes on <a href="https://iantomarcello.github.com/fetchProgress" target="_blank" rel="noreferrer">Github</a></li>
+      </ul>
+    </aside>
 
-  fetchProgress(urlObj.url, thatCallbackTho, {cache: "no-store"})
-    .then(resp => resp.blob())
-    .then(image => {
-      let img = new Image;
-      img.src = URL.createObjectURL(image);
-      img.width = 340;
-      target.lastElementChild.remove();
-      target.appendChild(img);
+    <script type="module">
 
-      let message = document.createElement("h3");
-      message.textContent = urlObj.message;
-      target.appendChild(message);
+      document.getElementById('loader').addEventListener("submit", ev => {
+        ev.preventDefault();
+      });
 
-      let source = document.createElement("a");
-      source.href = urlObj.website;
-      source.target = "_blank";
-      let sourceSmall = document.createElement("small");
-      sourceSmall.textContent = `image by ${urlObj.owner}`;
-      source.appendChild(sourceSmall);
-      footer.appendChild(source);
-    })
-</script>
+      document.getElementById('loader-reload').addEventListener("click", ev => loadImage());
+
+      import fetchProgress from "./fetchProgress.js";
+
+      let urls = [
+        {
+          id: "Mann",
+          owner: "Jonnelle Yankovich",
+          website: "https://www.instagram.com/jey__photography/",
+          url: "https://images.unsplash.com/photo-1562133094-fb8d05dcb178",
+          message: "Your LOOONNNNG awaited prince charming... No? 🤴"
+        }, {
+          id: "Katze",
+          owner: "Callum Wale",
+          website: "https://callumwale.co.uk/",
+          url: "https://images.unsplash.com/photo-1533738699159-d0c68059bb61",
+          message: "Cat is not amused with the loading speed... 😾"
+        }, {
+          id: "Sonne",
+          owner: "Max Kleinen",
+          website: "https://unsplash.com/@hirmin/",
+          url: "https://images.unsplash.com/photo-1553884013-b6968e053b96",
+          message: "That took so long, the sun has set. 🌅"
+        },
+      ]
+
+      let target = document.getElementById("target");
+      let footer = document.querySelector("footer");
+
+      let thatCallbackTho = (accumulated, total) => {
+        switch ( document.getElementById('loader').appearance.value ) {
+          case "bar":
+            target.innerHTML = `<progress max="${total}" value="${accumulated}">Loading ${(accumulated / total * 100).toFixed(0)}%</progress>`;
+            break;
+          case "circle":
+            target.innerHTML = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="78px" height="78px" viewBox="0 0 78 78" style="enable-background:new 0 0 78 78;" xml:space="preserve">
+            <style type="text/css">.st0{fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10;stroke-dasharray:235;stroke-dashoffset:${-235 + Math.round((accumulated / total) * 235)};}
+            </style><path class="st0" d="M39,1.5c20.7,0,37.5,16.8,37.5,37.5S59.7,76.5,39,76.5S1.5,59.7,1.5,39S18.3,1.5,39,1.5"/></svg>`
+            break;
+          case "number":
+          default:
+            target.innerHTML = `<h2>Loading ${(accumulated / total * 100).toFixed(0)}%</h2>`
+        }
+      }
+
+      let loadImage = () => {
+        let urlObj = urls[Math.floor(Math.random() * urls.length)];
+        while ( target.lastElementChild ) target.lastElementChild.remove();
+        while ( footer.lastElementChild ) footer.lastElementChild.remove();
+
+        fetchProgress(urlObj.url, thatCallbackTho, {cache: "no-store"})
+          .then(resp => resp.blob())
+          .then(image => {
+            let img = new Image;
+            img.src = URL.createObjectURL(image);
+            img.width = 340;
+            target.lastElementChild.remove();
+            target.appendChild(img);
+
+            let message = document.createElement("h3");
+            message.textContent = urlObj.message;
+            target.appendChild(message);
+
+            let source = document.createElement("a");
+            source.href = urlObj.website;
+            source.target = "_blank";
+            let sourceSmall = document.createElement("small");
+            sourceSmall.textContent = `image by ${urlObj.owner}`;
+            source.appendChild(sourceSmall);
+            footer.appendChild(source);
+          });
+      }
+      loadImage();
+
+    </script>
+  </body>
+</html>
